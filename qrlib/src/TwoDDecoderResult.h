@@ -21,10 +21,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface TwoDDecoderResult : NSObject {
-  NSString *text;
-  NSArray *points;
-}
+@interface TwoDDecoderResult : NSObject
 
 @property (nonatomic, copy) NSString *text;
 @property (nonatomic, retain) NSArray *points;

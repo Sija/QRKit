@@ -23,25 +23,16 @@
 #import <UIKit/UIKit.h>
 #import "DecoderDelegate.h"
 
-@interface Decoder : NSObject {
-	UIImage *image;
-	CGRect cropRect;
-  UIImage *subsetImage;
-  unsigned char *subsetData;
-  size_t subsetWidth;
-  size_t subsetHeight;
-  size_t subsetBytesPerRow;
-	id<DecoderDelegate> delegate;
-}
+@interface Decoder : NSObject
 
-@property(nonatomic, retain) UIImage *image;
-@property(nonatomic, assign) CGRect cropRect;
-@property(nonatomic, retain) UIImage *subsetImage;
-@property(nonatomic, assign) unsigned char *subsetData;
-@property(assign) size_t subsetWidth;
-@property(assign) size_t subsetHeight;
-@property(assign) size_t subsetBytesPerRow;
-@property(nonatomic, assign) id<DecoderDelegate> delegate;
+@property (nonatomic, retain) UIImage *image;
+@property (nonatomic, assign) CGRect cropRect;
+@property (nonatomic, retain) UIImage *subsetImage;
+@property (nonatomic, assign) unsigned char *subsetData;
+@property (assign) size_t subsetWidth;
+@property (assign) size_t subsetHeight;
+@property (assign) size_t subsetBytesPerRow;
+@property (nonatomic, assign) id<DecoderDelegate> delegate;
 
 - (void) decodeImage:(UIImage *)image;
 - (void) decodeImage:(UIImage *)image cropRect:(CGRect)cropRect;

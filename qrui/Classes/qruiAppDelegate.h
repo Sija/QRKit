@@ -23,8 +23,8 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 @interface qruiAppDelegate : NSObject <UIApplicationDelegate> {
-  UIWindow*           _window;
-  DecoderController*  _decoderController;
+    UIWindow*           _window;
+    DecoderController*  _decoderController;
 }
 
 

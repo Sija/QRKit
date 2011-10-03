@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#import <AVFoundation/AVFoundation.h>
 #import "DecoderDelegate.h"
 
 
@@ -23,20 +24,33 @@
 
 @class OverlayView;
 @class Decoder;
+@class DecoderController;
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+@protocol DecoderControllerDelegate <NSObject>
+
+@optional
+- (void) decoderController:(DecoderController *)controller didScanResult:(NSString *)result;
+- (void) decoderControllerDidCancel:(DecoderController *)controller;
+
+@end
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 @interface DecoderController : UIViewController <
-  UIAlertViewDelegate,
-  UINavigationControllerDelegate,
-  UIImagePickerControllerDelegate,
-  DecoderDelegate
-> {
-  UIImagePickerController*  _imagePicker;
-  OverlayView*              _overlayView;
-  NSTimer*                  _timer;
+    UIAlertViewDelegate,
+    UINavigationControllerDelegate,
+    UIImagePickerControllerDelegate,
+    DecoderDelegate,
+    AVCaptureVideoDataOutputSampleBufferDelegate
+>
 
-  Decoder*                  _decoder;
-}
+@property (nonatomic, assign) id<DecoderControllerDelegate> delegate;
+@property (nonatomic, retain) OverlayView* overlayView;
+@property (nonatomic, retain) Decoder* decoder;
+@property (nonatomic, assign, getter = isDecoding) BOOL decoding;
+
+- (id) initWithDelegate:(id<DecoderControllerDelegate>)delegate showCancel:(BOOL)shouldShowCancel;
 
 @end

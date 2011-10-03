@@ -24,26 +24,25 @@
 
 @implementation TwoDDecoderResult
 
-@synthesize text;
-@synthesize points;
+@synthesize text = _text;
+@synthesize points = _points;
 
 + resultWithText:(NSString *)text points:(NSArray *)points {
-  return [[[self alloc] initWithText:text points:points] autorelease];
+    return [[[self alloc] initWithText:text points:points] autorelease];
 }
 
-- initWithText:(NSString *)t points:(NSArray *)p {
-  if ((self = [super init]) != nil) {
-    self.text = t;
-    self.points = p;
-  }
-  return self;
+- initWithText:(NSString *)text points:(NSArray *)points {
+    if ((self = [super init]) != nil) {
+        self.text = text;
+        self.points = points;
+    }
+    return self;
 }
 
-- (void)dealloc {
-  [text release];
-  [points release];
-  [super dealloc];
+- (void) dealloc {
+    self.text = nil;
+    self.points = nil;
+    [super dealloc];
 }
-
 
 @end

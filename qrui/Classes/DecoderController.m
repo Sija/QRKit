@@ -15,15 +15,24 @@
  */
 
 #import "DecoderController.h"
+#import "UIImage-Extensions.h"
 
 #import "OverlayView.h"
-#import "QRImagePickerController.h"
 
 #import "Decoder.h"
 #import "TwoDDecoderResult.h"
 
 
-static const NSTimeInterval kTakePictureTimeInterval = 5;
+////////////////////////////////////////////////////////////////////////////////////////////////////
+@interface DecoderController ()
+
+@property (nonatomic, retain) AVCaptureSession*           captureSession;
+@property (nonatomic, retain) AVCaptureVideoPreviewLayer* previewLayer;
+
+- (void) startCapture;
+- (void) stopCapture;
+
+@end
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -31,71 +40,84 @@ static const NSTimeInterval kTakePictureTimeInterval = 5;
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 @implementation DecoderController
 
+@synthesize delegate = _delegate;
+@synthesize overlayView = _overlayView;
+@synthesize decoder = _decoder;
+@synthesize decoding = _decoding;
+@synthesize captureSession = _captureSession;
+@synthesize previewLayer = _previewLayer;
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+- (id) initWithDelegate:(id<DecoderControllerDelegate>)delegate showCancel:(BOOL)shouldShowCancel {
+    self = [super initWithNibName:nil bundle:nil];
+    if (self) {
+        self.delegate = delegate;
+    }
+    return self;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+- (id) initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    if (self) {
+        self.wantsFullScreenLayout = YES;
+    }
+    return self;
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 - (void) dealloc {
-  [_imagePicker release];
-  _imagePicker = nil;
-  [_overlayView release];
-  _overlayView = nil;
-  [_decoder release];
-  _decoder = nil;
-
-  [super dealloc];
+    [self stopCapture];
+    
+    self.delegate = nil;
+    self.overlayView = nil;
+    self.decoder = nil;
+    
+    [super dealloc];
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 - (void) loadView {
-  [super loadView];
+    [super loadView];
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 - (void) viewDidAppear:(BOOL)animated {
-  if( nil != _imagePicker ) {
-    return;
-  }
-
-  UIImagePickerControllerSourceType type = UIImagePickerControllerSourceTypeCamera;
-
-  if( ![UIImagePickerController isSourceTypeAvailable:type] ) {
-    UIAlertView* alertView = [[UIAlertView alloc]
-          initWithTitle:@"Not a supported device"
-                message:@"You need a camera to run this app"
-               delegate:self
-      cancelButtonTitle:@"Darn"
-      otherButtonTitles:nil];
-
-    [alertView show];
-
-  } else {
-    _imagePicker = [[QRImagePickerController alloc] init];
-
-    _overlayView = [[OverlayView alloc] initWithFrame:[UIScreen mainScreen].bounds];
-
-    _imagePicker.delegate = self;
-    _imagePicker.allowsEditing = NO;
-    _imagePicker.showsCameraControls = NO;
-    _imagePicker.cameraOverlayView = _overlayView;
-
-    [self presentModalViewController:_imagePicker animated:YES];
-
-    _timer = [NSTimer
-      scheduledTimerWithTimeInterval: kTakePictureTimeInterval
-                              target: self
-                            selector: @selector(takePicture:)
-                            userInfo: nil
-                             repeats: YES];
-  }
+    [super viewDidAppear:animated];
+    
+    if (![UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+        UIAlertView *alertView = [[UIAlertView alloc]
+                                  initWithTitle:@"Not a supported device"
+                                  message:@"You need a camera to run this app"
+                                  delegate:self
+                                  cancelButtonTitle:@"Darn"
+                                  otherButtonTitles:nil];
+        
+        [alertView show];
+        
+    } else {
+        if (nil != _overlayView) {
+            return;
+        }
+        _overlayView = [[OverlayView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+        
+        [self startCapture];
+        [self.view addSubview:_overlayView];
+    }
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
-	[self dismissModalViewControllerAnimated:YES];
+- (void) viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    
+    [_overlayView removeFromSuperview];
+    [self stopCapture];
 }
-
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -105,79 +127,183 @@ static const NSTimeInterval kTakePictureTimeInterval = 5;
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) alertView:(UIAlertView*)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-  // Bail out.
+- (void) alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    // Bail out.
+    [alertView release];
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark -
-#pragma mark UIImagePickerControllerDelegate
+#pragma mark AVFoundation related
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-- (UIImage*) scaledImage:(UIImage*)baseImage {
-	CGSize targetSize = CGSizeMake(320, 480);	
-	CGRect scaledRect = CGRectZero;
+- (void) startCapture {
+    _decoding = YES;
+    
+    AVCaptureDeviceInput *captureInput = [AVCaptureDeviceInput deviceInputWithDevice:[AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo] error:nil];
+    AVCaptureVideoDataOutput *captureOutput = [[AVCaptureVideoDataOutput alloc] init]; 
+    [captureOutput setAlwaysDiscardsLateVideoFrames:YES];
+    [captureOutput setSampleBufferDelegate:self queue:dispatch_get_main_queue()];
+    
+    NSString *key = (NSString *) kCVPixelBufferPixelFormatTypeKey; 
+    NSNumber *value = [NSNumber numberWithUnsignedInt:kCVPixelFormatType_32BGRA]; 
+    NSDictionary *videoSettings = [NSDictionary dictionaryWithObject:value forKey:key];
+    [captureOutput setVideoSettings:videoSettings];
+    
+    _captureSession = [[AVCaptureSession alloc] init];
+    _captureSession.sessionPreset = AVCaptureSessionPresetMedium; // 480x360 on a 4
+    
+    [_captureSession addInput:captureInput];
+    [_captureSession addOutput:captureOutput];
 
-	CGFloat scaledX = 480 * baseImage.size.width / baseImage.size.height;
-
-	scaledRect.origin = CGPointMake(0, 0.0);
-	scaledRect.size.width  = scaledX;
-	scaledRect.size.height = 480;
-
-	UIGraphicsBeginImageContext(targetSize);
-	[baseImage drawInRect:scaledRect];
-	UIImage* result = UIGraphicsGetImageFromCurrentImageContext();
-	UIGraphicsEndImageContext();
-
-  return result;
+    [captureOutput release];
+    
+    /*
+    [[NSNotificationCenter defaultCenter]
+     addObserver:self
+     selector:@selector(stopPreview:)
+     name:AVCaptureSessionDidStopRunningNotification
+     object:_captureSession];
+    
+    [[NSNotificationCenter defaultCenter]
+     addObserver:self
+     selector:@selector(notification:)
+     name:AVCaptureSessionDidStopRunningNotification
+     object:_captureSession];
+    
+    [[NSNotificationCenter defaultCenter]
+     addObserver:self
+     selector:@selector(notification:)
+     name:AVCaptureSessionRuntimeErrorNotification
+     object:_captureSession];
+    
+    [[NSNotificationCenter defaultCenter]
+     addObserver:self
+     selector:@selector(notification:)
+     name:AVCaptureSessionDidStartRunningNotification
+     object:_captureSession];
+    
+    [[NSNotificationCenter defaultCenter]
+     addObserver:self
+     selector:@selector(notification:)
+     name:AVCaptureSessionWasInterruptedNotification
+     object:_captureSession];
+    
+    [[NSNotificationCenter defaultCenter]
+     addObserver:self
+     selector:@selector(notification:)
+     name:AVCaptureSessionInterruptionEndedNotification
+     object:_captureSession];
+    */
+    
+    if (!_previewLayer) {
+        _previewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:_captureSession];
+    }
+    // NSLog(@"prev %p %@", _previewLayer, _previewLayer);
+    _previewLayer.frame = self.view.bounds;
+    _previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
+    [self.view.layer addSublayer:_previewLayer];
+    
+    [_captureSession startRunning];
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-- (UIImage*) croppedImage:(UIImage*)baseImage {
-	CGSize targetSize = _overlayView.cropRect.size;	
-
-	UIGraphicsBeginImageContext(targetSize);
-	[baseImage drawAtPoint:CGPointMake(-_overlayView.cropRect.origin.x, -_overlayView.cropRect.origin.y)];
-	UIImage* result = UIGraphicsGetImageFromCurrentImageContext();
-	UIGraphicsEndImageContext();
-
-  return result;
-}
-
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) imagePickerController:(UIImagePickerController*)picker 
-         didFinishPickingMediaWithInfo:(NSDictionary*)info {
-  UIImage* image = [info objectForKey:UIImagePickerControllerOriginalImage];
-
-  UIImage* scaled = [self scaledImage:image];
-
-  if( nil == _decoder ) {
-    _decoder = [[Decoder alloc] init];
-    _decoder.delegate = self;
-  }
-  [_decoder decodeImage:scaled cropRect:_overlayView.cropRect];
-
-  _overlayView.image = [self croppedImage:scaled];
+- (void) stopCapture {
+    _decoding = NO;
+    
+    if (nil != _captureSession) {
+        [_captureSession stopRunning];
+        AVCaptureInput *input = [_captureSession.inputs objectAtIndex:0];
+        [_captureSession removeInput:input];
+        AVCaptureVideoDataOutput *output = (AVCaptureVideoDataOutput *) [_captureSession.outputs objectAtIndex:0];
+        [_captureSession removeOutput:output];
+    }
+    if (nil != _previewLayer) {
+        [_previewLayer removeFromSuperlayer];
+    }
+    self.previewLayer = nil;
+    self.captureSession = nil;
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark -
-#pragma mark NSTimer
-
+#pragma mark AVCaptureVideoDataOutputSampleBufferDelegate
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-- (void)takePicture:(NSTimer*)theTimer {
-  [_imagePicker takePicture];
-}
+- (void) captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection {
+    if (!_decoding) {
+        //NSLog(@"Capturing while stopped!");
+        return;
+    }
+    CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer); 
+    // Lock the image buffer
+    CVPixelBufferLockBaseAddress(imageBuffer, 0); 
+    // Get information about the image
+    size_t bytesPerRow = CVPixelBufferGetBytesPerRow(imageBuffer); 
+    size_t width = CVPixelBufferGetWidth(imageBuffer); 
+    size_t height = CVPixelBufferGetHeight(imageBuffer); 
+    
+    uint8_t *baseAddress = CVPixelBufferGetBaseAddress(imageBuffer); 
+    void *free_me = NULL;
+    if (true) { // iPhone 3G bug
+        uint8_t *tmp = baseAddress;
+        int bytes = bytesPerRow * height;
+        free_me = baseAddress = (uint8_t *) malloc(bytes);
+        //baseAddress[0] = 0xdb;
+        memcpy(baseAddress, tmp, bytes);
+    }
+    
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB(); 
+    CGContextRef newContext = CGBitmapContextCreate(baseAddress, width, height, 8, bytesPerRow, colorSpace, kCGBitmapByteOrder32Little | kCGImageAlphaNoneSkipFirst); 
+    
+    CGImageRef capture = CGBitmapContextCreateImage(newContext);
+    CVPixelBufferUnlockBaseAddress(imageBuffer, 0);
+    free(free_me);
+    
+    CGContextRelease(newContext); 
+    CGColorSpaceRelease(colorSpace);
+    
+    CGRect cropRect = [_overlayView cropRect];
+     // N.B.
+     // - Won't work if the overlay becomes uncentered ...
+     // - iOS always takes videos in landscape
+     // - images are always 4x3; device is not
+     // - iOS uses virtual pixels for non-image stuff
+    {
+        size_t height = CGImageGetHeight(capture);
+        size_t width = CGImageGetWidth(capture);
+                
+        cropRect.origin.x = (width - cropRect.size.width) / 2;
+        cropRect.origin.y = (height - cropRect.size.height) / 2;
+    }
 
+    CGImageRef newImage = CGImageCreateWithImageInRect(capture, cropRect);
+    CGImageRelease(capture);
+    UIImage *image = [[UIImage alloc] initWithCGImage:newImage];
+    CGImageRelease(newImage);
+    
+    UIImage *rotated = [image imageRotatedByDegrees:90.f];
+
+    if (nil == _decoder) {
+        _decoder = [[Decoder alloc] init];
+        _decoder.delegate = self;
+    }
+
+    //Decoder *decoder = [[Decoder alloc] init];
+    //decoder.delegate = self;
+
+    cropRect.origin = CGPointZero;
+    [_decoder decodeImage:rotated cropRect:cropRect];
+    
+    [image release];
+    //[decoder release];
+} 
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -187,29 +313,42 @@ static const NSTimeInterval kTakePictureTimeInterval = 5;
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-- (void)decoder:(Decoder *)decoder willDecodeImage:(UIImage *)image usingSubset:(UIImage *)subset {
+- (void) decoder:(Decoder *)decoder willDecodeImage:(UIImage *)image usingSubset:(UIImage *)subset {
+    NSLog(@"willDecodeImage");
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-- (void)decoder:(Decoder *)decoder decodingImage:(UIImage *)image usingSubset:(UIImage *)subset progress:(NSString *)message {
+- (void) decoder:(Decoder *)decoder decodingImage:(UIImage *)image usingSubset:(UIImage *)subset progress:(NSString *)message {
+    NSLog(@"decodingImage");
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-- (void)decoder:(Decoder *)decoder didDecodeImage:(UIImage *)image usingSubset:(UIImage *)subset withResult:(TwoDDecoderResult *)result {
-  NSLog(@"didDecodeImage");
-  NSLog(@"%@", result.text);
-  NSLog(@"%@", result.points);
-  _overlayView.points = result.points;
+- (void) decoder:(Decoder *)decoder didDecodeImage:(UIImage *)image usingSubset:(UIImage *)subset withResult:(TwoDDecoderResult *)result {
+    NSLog(@"didDecodeImage");
+    NSLog(@"%@", result.text);
+    NSLog(@"%@", result.points);
+    
+    _overlayView.image = image;
+    _overlayView.points = result.points;
+    
+    //[self stopCapture];
+    _decoding = NO;
+    
+    if ([self.delegate respondsToSelector:@selector(decoderController:didScanResult:)]) {
+        [self.delegate decoderController:self didScanResult:result.text];
+    }
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-- (void)decoder:(Decoder *)decoder failedToDecodeImage:(UIImage *)image usingSubset:(UIImage *)subset reason:(NSString *)reason {
+- (void) decoder:(Decoder *)decoder failedToDecodeImage:(UIImage *)image usingSubset:(UIImage *)subset reason:(NSString *)reason {
+    NSLog(@"failedToDecodeImage");
+    
+    _overlayView.image = nil;
+    _overlayView.points = nil;
 }
-
-
 
 
 @end

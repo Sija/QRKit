@@ -26,22 +26,20 @@
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) applicationDidFinishLaunching:(UIApplication*)application {
-  _window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-
-  _decoderController = [[DecoderController alloc] init];
-
-  [_window addSubview:_decoderController.view];
-
-  [_window makeKeyAndVisible];
+- (void) applicationDidFinishLaunching:(UIApplication *)application {
+    _window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    _decoderController = [[DecoderController alloc] initWithNibName:nil bundle:nil];
+    
+    [_window addSubview:_decoderController.view];
+    [_window makeKeyAndVisible];
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 - (void) dealloc {
-  [_window release];
-  [super dealloc];
+    [_decoderController release];
+    [_window release];
+    [super dealloc];
 }
-
 
 @end

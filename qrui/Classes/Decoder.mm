@@ -28,176 +28,183 @@
 #include "IllegalArgumentException.h"
 #include "GrayBytesMonochromeBitmapSource.h"
 
-using namespace qrcode;
+
+#ifndef TRY_ROTATIONS
+    #define TRY_ROTATIONS 0
+#endif
+#define SUBSET_SIZE 320.0f
+
 
 @implementation Decoder
 
-@synthesize image;
-@synthesize cropRect;
-@synthesize subsetImage;
-@synthesize subsetData;
-@synthesize subsetWidth;
-@synthesize subsetHeight;
-@synthesize subsetBytesPerRow;
-@synthesize delegate;
+@synthesize image = _image;
+@synthesize cropRect = _cropRect;
+@synthesize subsetImage = _subsetImage;
+@synthesize subsetData = _subsetData;
+@synthesize subsetWidth = _subsetWidth;
+@synthesize subsetHeight = _subsetHeight;
+@synthesize subsetBytesPerRow = _subsetBytesPerRow;
+@synthesize delegate = _delegate;
 
-- (void)willDecodeImage {
-  [self.delegate decoder:self willDecodeImage:self.image usingSubset:self.subsetImage];
+- (void) willDecodeImage {
+    [self.delegate decoder:self willDecodeImage:self.image usingSubset:self.subsetImage];
 }
 
-- (void)progressDecodingImage:(NSString *)progress {
-  [self.delegate decoder:self 
-          decodingImage:self.image 
-            usingSubset:self.subsetImage
-               progress:progress];
+- (void) progressDecodingImage:(NSString *)progress {
+    [self.delegate decoder:self 
+             decodingImage:self.image 
+               usingSubset:self.subsetImage
+                  progress:progress];
 }
 
-- (void)didDecodeImage:(TwoDDecoderResult *)result {
-  [self.delegate decoder:self didDecodeImage:self.image usingSubset:self.subsetImage withResult:result];
+- (void) didDecodeImage:(TwoDDecoderResult *)result {
+    [self.delegate decoder:self didDecodeImage:self.image usingSubset:self.subsetImage withResult:result];
 }
 
-- (void)failedToDecodeImage:(NSString *)reason {
-  [self.delegate decoder:self failedToDecodeImage:self.image usingSubset:self.subsetImage reason:reason];
+- (void) failedToDecodeImage:(NSString *)reason {
+    [self.delegate decoder:self failedToDecodeImage:self.image usingSubset:self.subsetImage reason:reason];
 }
 
-#define SUBSET_SIZE 320.0
 - (void) prepareSubset {
-  CGSize size = [image size];
-
-  float scale = fminf(1.0f, fmaxf(SUBSET_SIZE / cropRect.size.width, SUBSET_SIZE / cropRect.size.height));
-	CGPoint offset = CGPointMake(-cropRect.origin.x, -cropRect.origin.y);
-
-  subsetWidth = cropRect.size.width * scale;
-  subsetHeight = cropRect.size.height * scale;
-  
-  subsetBytesPerRow = ((subsetWidth + 0xf) >> 4) << 4;
-  subsetData = (unsigned char *)malloc(subsetBytesPerRow * subsetHeight);
-  
-  CGColorSpaceRef grayColorSpace = CGColorSpaceCreateDeviceGray();
-  
-  CGContextRef ctx = 
-  CGBitmapContextCreate(subsetData, subsetWidth, subsetHeight, 
-                        8, subsetBytesPerRow, grayColorSpace, 
-                        kCGImageAlphaNone);
-  CGColorSpaceRelease(grayColorSpace);
-  CGContextSetInterpolationQuality(ctx, kCGInterpolationNone);
-  CGContextSetAllowsAntialiasing(ctx, false);
+    CGSize size = [self.image size];
+    
+    CGFloat scale = fminf(1.0f, fmaxf(SUBSET_SIZE / _cropRect.size.width, SUBSET_SIZE / _cropRect.size.height));
+	CGPoint offset = CGPointMake(-_cropRect.origin.x, -_cropRect.origin.y);
+    
+    _subsetWidth = _cropRect.size.width * scale;
+    _subsetHeight = _cropRect.size.height * scale;
+    
+    _subsetBytesPerRow = ((_subsetWidth + 0xf) >> 4) << 4;
+    _subsetData = (unsigned char *) malloc(_subsetBytesPerRow * _subsetHeight);
+    
+    CGColorSpaceRef grayColorSpace = CGColorSpaceCreateDeviceGray();
+    
+    CGContextRef ctx = 
+    CGBitmapContextCreate(_subsetData, _subsetWidth, _subsetHeight, 
+                          8, _subsetBytesPerRow, grayColorSpace, 
+                          kCGImageAlphaNone);
+    CGColorSpaceRelease(grayColorSpace);
+    CGContextSetInterpolationQuality(ctx, kCGInterpolationNone);
+    CGContextSetAllowsAntialiasing(ctx, false);
 	// adjust the coordinate system
-	CGContextTranslateCTM(ctx, 0.0, subsetHeight);
+	CGContextTranslateCTM(ctx, 0.0, _subsetHeight);
 	CGContextScaleCTM(ctx, 1.0, -1.0);	
-
+    
 	UIGraphicsPushContext(ctx);
 	CGRect rect = CGRectMake(offset.x * scale, offset.y * scale, scale * size.width, scale * size.height);
-	[image drawInRect:rect];
+	[self.image drawInRect:rect];
 	UIGraphicsPopContext();
-  
-  CGContextFlush(ctx);
     
-  CGImageRef subsetImageRef = CGBitmapContextCreateImage(ctx);
-
-  self.subsetImage = [UIImage imageWithCGImage:subsetImageRef];
-  CGImageRelease(subsetImageRef);
-  
-  CGContextRelease(ctx);
-}  
-
-- (void)decode:(id)arg {
-  NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-  { 
-    QRCodeReader reader;
-
-    Ref<MonochromeBitmapSource> grayImage
-    (new GrayBytesMonochromeBitmapSource(subsetData, subsetWidth, subsetHeight, subsetBytesPerRow));
+    CGContextFlush(ctx);
     
-    TwoDDecoderResult *decoderResult = nil;
+    CGImageRef subsetImageRef = CGBitmapContextCreateImage(ctx);
+    UIImage *subsetImage = [[UIImage alloc] initWithCGImage:subsetImageRef];
     
-#ifdef TRY_ROTATIONS
-    for (int i = 0; !decoderResult && i < 4; i++) {
-#endif
-
-    try {
-      Ref<Result> result(reader.decode(grayImage));
-      
-      Ref<String> resultText(result->getText());
-      const char *cString = resultText->getText().c_str();
-      ArrayRef<Ref<ResultPoint> > resultPoints = result->getResultPoints();
-      NSMutableArray *points = 
-        [NSMutableArray arrayWithCapacity:resultPoints->size()];
-      
-      for (size_t i = 0; i < resultPoints->size(); i++) {
-        Ref<ResultPoint> rp(resultPoints[i]);
-        CGPoint p = CGPointMake(rp->getX(), rp->getY());
-        [points addObject:[NSValue valueWithCGPoint:p]];
-      }
-      
-      NSString *resultString = [NSString stringWithCString:cString
-                                        encoding:NSUTF8StringEncoding];
-      
-      decoderResult = [TwoDDecoderResult resultWithText:resultString
-                                             points:points];
-    } catch (ReaderException rex) {
-      NSLog(@"failed to decode, caught ReaderException '%s'",
-            rex.what());
-    } catch (IllegalArgumentException iex) {
-      NSLog(@"failed to decode, caught IllegalArgumentException '%s'", 
-            iex.what());
-    } catch (...) {
-      NSLog(@"Caught unknown exception!");
-    }
-
-#ifdef TRY_ROTATIONS
-      if (!decoderResult) {
-        grayImage = grayImage->rotateCounterClockwise();
-      }
-    }
-#endif
+    self.subsetImage = subsetImage;
     
-    if (decoderResult) {
-      [self performSelectorOnMainThread:@selector(didDecodeImage:)
-                             withObject:decoderResult
-                          waitUntilDone:NO];
-    } else {
-      [self performSelectorOnMainThread:@selector(failedToDecodeImage:)
-                             withObject:NSLocalizedString(@"Decoder BarcodeDetectionFailure", @"No barcode detected.")
-                          waitUntilDone:NO];
-    }
-
-    free(subsetData);
-    self.subsetData = NULL;
-  }
-  [pool release];
-  
-  // if this is not the main thread, then we end it
-  if (![NSThread isMainThread]) {
-    [NSThread exit];
-  }
+    [subsetImage release];
+    CGImageRelease(subsetImageRef);
+    
+    CGContextRelease(ctx);
 }
 
-- (void) decodeImage:(UIImage *)i {
-  [self decodeImage:i cropRect:CGRectMake(0.0f, 0.0f, image.size.width, image.size.height)];
+- (void) decode:(id)arg {
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    { 
+        qrcode::QRCodeReader reader;
+        Ref<MonochromeBitmapSource> grayImage(new GrayBytesMonochromeBitmapSource(_subsetData, _subsetWidth, _subsetHeight, _subsetBytesPerRow));
+        TwoDDecoderResult *decoderResult = nil;
+        
+#if TRY_ROTATIONS
+        for (int i = 0; !decoderResult && i < 4; i++) {
+#endif      
+            try {
+                Ref<Result> result(reader.decode(grayImage));
+                
+                Ref<String> resultText(result->getText());
+                const char *cString = resultText->getText().c_str();
+                ArrayRef<Ref<ResultPoint> > resultPoints = result->getResultPoints();
+                NSMutableArray *points = [NSMutableArray arrayWithCapacity:resultPoints->size()];
+                
+                for (size_t i = 0; i < resultPoints->size(); i++) {
+                    Ref<ResultPoint> rp(resultPoints[i]);
+                    CGPoint p = CGPointMake(rp->getX(), rp->getY());
+                    [points addObject:[NSValue valueWithCGPoint:p]];
+                }
+                
+                NSString *resultString = [NSString stringWithCString:cString encoding:NSUTF8StringEncoding];
+                decoderResult = [TwoDDecoderResult resultWithText:resultString points:points];
+                
+            } catch (ReaderException rex) {
+                NSLog(@"failed to decode, caught ReaderException '%s'", rex.what());
+                
+            } catch (IllegalArgumentException iex) {
+                NSLog(@"failed to decode, caught IllegalArgumentException '%s'", iex.what());
+                
+            } catch (...) {
+                NSLog(@"Caught unknown exception!");
+            }
+            
+#if TRY_ROTATIONS
+            if (!decoderResult) {
+                grayImage = grayImage->rotateCounterClockwise();
+            }
+        }
+#endif
+        
+        if (decoderResult) {
+            [self performSelectorOnMainThread:@selector(didDecodeImage:)
+                                   withObject:decoderResult
+                                waitUntilDone:NO];
+        } else {
+            [self performSelectorOnMainThread:@selector(failedToDecodeImage:)
+                                   withObject:NSLocalizedString(@"Decoder BarcodeDetectionFailure", @"No barcode detected.")
+                                waitUntilDone:NO];
+        }
+        
+        free(_subsetData);
+        self.subsetData = NULL;
+    }
+    [pool release];
+    
+    // if this is not the main thread, then we end it
+    if (![NSThread isMainThread]) {
+        [NSThread exit];
+    }
 }
 
-- (void) decodeImage:(UIImage *)i cropRect:(CGRect)cr {
-	self.image = i;
-	self.cropRect = cr;
-  
-  [self prepareSubset];
-	[self.delegate decoder:self willDecodeImage:i usingSubset:self.subsetImage];
+- (void) decodeImage:(UIImage *)image {
+    [self decodeImage:image cropRect:CGRectMake(0.0f, 0.0f, self.image.size.width, self.image.size.height)];
+}
 
-  
-  [self performSelectorOnMainThread:@selector(progressDecodingImage:)
-                         withObject:NSLocalizedString(@"Decoder MessageWhileDecoding", @"Decoding ...")
-                      waitUntilDone:NO];  
-  
+- (void) decodeImage:(UIImage *)image cropRect:(CGRect)cropRect {
+	self.image = image;
+	self.cropRect = cropRect;
+    
+    [self prepareSubset];
+	[self.delegate decoder:self willDecodeImage:image usingSubset:self.subsetImage];
+    
+    
+    [self performSelectorOnMainThread:@selector(progressDecodingImage:)
+                           withObject:NSLocalizedString(@"Decoder MessageWhileDecoding", @"Decoding ...")
+                        waitUntilDone:NO];  
+    
+    /*
 	[NSThread detachNewThreadSelector:@selector(decode:) 
-                           toTarget:self 
-                         withObject:nil];
+                             toTarget:self 
+                           withObject:nil];
+     */
+    [self decode:nil];
 }
 
 - (void) dealloc {
-	[image release];
-  [subsetImage release];
-  if (subsetData) free(subsetData);
+    self.image = nil;
+    self.subsetImage = nil;
+    
+    if (_subsetData) {
+        free(_subsetData);
+        self.subsetData = NULL;
+    }
 	[super dealloc];
 }
 
