@@ -69,7 +69,7 @@
     CGSize size = [self.image size];
     
     CGFloat scale = fminf(1.0f, fmaxf(SUBSET_SIZE / _cropRect.size.width, SUBSET_SIZE / _cropRect.size.height));
-	CGPoint offset = CGPointMake(-_cropRect.origin.x, -_cropRect.origin.y);
+    CGPoint offset = CGPointMake(-_cropRect.origin.x, -_cropRect.origin.y);
     
     _subsetWidth = _cropRect.size.width * scale;
     _subsetHeight = _cropRect.size.height * scale;
@@ -86,14 +86,14 @@
     CGColorSpaceRelease(grayColorSpace);
     CGContextSetInterpolationQuality(ctx, kCGInterpolationNone);
     CGContextSetAllowsAntialiasing(ctx, false);
-	// adjust the coordinate system
-	CGContextTranslateCTM(ctx, 0.0, _subsetHeight);
-	CGContextScaleCTM(ctx, 1.0, -1.0);	
+    // adjust the coordinate system
+    CGContextTranslateCTM(ctx, 0.0, _subsetHeight);
+    CGContextScaleCTM(ctx, 1.0, -1.0);
     
-	UIGraphicsPushContext(ctx);
-	CGRect rect = CGRectMake(offset.x * scale, offset.y * scale, scale * size.width, scale * size.height);
-	[self.image drawInRect:rect];
-	UIGraphicsPopContext();
+    UIGraphicsPushContext(ctx);
+    CGRect rect = CGRectMake(offset.x * scale, offset.y * scale, scale * size.width, scale * size.height);
+    [self.image drawInRect:rect];
+    UIGraphicsPopContext();
     
     CGContextFlush(ctx);
     
@@ -178,11 +178,11 @@
 }
 
 - (void) decodeImage:(UIImage *)image cropRect:(CGRect)cropRect {
-	self.image = image;
-	self.cropRect = cropRect;
+    self.image = image;
+    self.cropRect = cropRect;
     
     [self prepareSubset];
-	[self.delegate decoder:self willDecodeImage:image usingSubset:self.subsetImage];
+    [self.delegate decoder:self willDecodeImage:image usingSubset:self.subsetImage];
     
     
     [self performSelectorOnMainThread:@selector(progressDecodingImage:)
@@ -190,7 +190,7 @@
                         waitUntilDone:NO];  
     
     /*
-	[NSThread detachNewThreadSelector:@selector(decode:) 
+    [NSThread detachNewThreadSelector:@selector(decode:) 
                              toTarget:self 
                            withObject:nil];
      */
@@ -205,7 +205,7 @@
         free(_subsetData);
         self.subsetData = NULL;
     }
-	[super dealloc];
+    [super dealloc];
 }
 
 @end
