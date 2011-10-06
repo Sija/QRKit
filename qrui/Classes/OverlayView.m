@@ -16,7 +16,16 @@
 
 #import "OverlayView.h"
 
+
 static const CGFloat kPadding = 10;
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+@interface OverlayView ()
+
+@property (nonatomic, retain) IBOutlet UIImageView *imageView;
+
+@end
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -25,6 +34,7 @@ static const CGFloat kPadding = 10;
 @implementation OverlayView
 
 @synthesize points = _points;
+@synthesize imageView = _imageView;
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -39,10 +49,8 @@ static const CGFloat kPadding = 10;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 - (void) dealloc {
-    [_imageView release];
-    _imageView = nil;
-    [_points release];
-    _points = nil;
+    self.imageView = nil;
+    self.points = nil;
     
     [super dealloc];
 }
@@ -104,8 +112,7 @@ static const CGFloat kPadding = 10;
     frame.origin.y = cropRect.origin.y;
     _imageView.frame = frame;
     
-    [_points release];
-    _points = nil;
+    self.points = nil;
     self.backgroundColor = [UIColor clearColor];
     
     [self setNeedsDisplay];

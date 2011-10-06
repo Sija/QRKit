@@ -46,6 +46,7 @@
 @synthesize decoding = _decoding;
 @synthesize captureSession = _captureSession;
 @synthesize previewLayer = _previewLayer;
+@synthesize wasStatusBarHidden = _wasStatusBarHidden;
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -69,11 +70,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 - (void) dealloc {
-    [self stopCapture];
-    
-    self.delegate = nil;
-    self.overlayView = nil;
-    self.decoder = nil;
+    [self viewDidUnload];
     
     [super dealloc];
 }
@@ -86,9 +83,23 @@
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+- (void) viewDidUnload {
+    [super viewDidUnload];
+    [self stopCapture];
+    
+    self.delegate = nil;
+    self.overlayView = nil;
+    self.decoder = nil;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
+    _wasStatusBarHidden = [[UIApplication sharedApplication] isStatusBarHidden];
+    if (!_wasStatusBarHidden) {
+        [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
+    }
     if (![UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
         UIAlertView *alertView = [[UIAlertView alloc]
                                   initWithTitle:@"Not a supported device"
@@ -103,11 +114,20 @@
         if (nil != _overlayView) {
             return;
         }
-        _overlayView = [[OverlayView alloc] initWithFrame:[UIScreen mainScreen].bounds];
-        
+        //[self performSelector:@selector(startCapture) withObject:nil afterDelay:0.0];
         [self startCapture];
-        [self.view addSubview:_overlayView];
     }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+- (void) viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
+    if (!_wasStatusBarHidden) {
+        [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
+    }
+    _decoding = NO;
 }
 
 
@@ -128,8 +148,12 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 - (void) alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    // Bail out.
     [alertView release];
+    
+    UIViewController *parent = self.parentViewController;
+    if (parent && parent.modalViewController == self) {
+        [parent dismissModalViewControllerAnimated:YES];
+    }
 }
 
 
@@ -207,7 +231,12 @@
     _previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
     [self.view.layer addSublayer:_previewLayer];
     
-    [_captureSession startRunning];
+    if (!_overlayView) {
+        _overlayView = [[OverlayView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+        [self.view addSubview:_overlayView];
+    }
+    [_captureSession performSelector:@selector(startRunning) withObject:nil afterDelay:0.0];
+    //[_captureSession startRunning];
 }
 
 
@@ -255,7 +284,7 @@
         uint8_t *tmp = baseAddress;
         int bytes = bytesPerRow * height;
         free_me = baseAddress = (uint8_t *) malloc(bytes);
-        //baseAddress[0] = 0xdb;
+        baseAddress[0] = 0xdb;
         memcpy(baseAddress, tmp, bytes);
     }
     
@@ -314,13 +343,13 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 - (void) decoder:(Decoder *)decoder willDecodeImage:(UIImage *)image usingSubset:(UIImage *)subset {
-    NSLog(@"willDecodeImage");
+    //NSLog(@"willDecodeImage");
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 - (void) decoder:(Decoder *)decoder decodingImage:(UIImage *)image usingSubset:(UIImage *)subset progress:(NSString *)message {
-    NSLog(@"decodingImage");
+    //NSLog(@"decodingImage");
 }
 
 
@@ -344,7 +373,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 - (void) decoder:(Decoder *)decoder failedToDecodeImage:(UIImage *)image usingSubset:(UIImage *)subset reason:(NSString *)reason {
-    NSLog(@"failedToDecodeImage");
+    //NSLog(@"failedToDecodeImage");
     
     _overlayView.image = nil;
     _overlayView.points = nil;

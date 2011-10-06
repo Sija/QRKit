@@ -15,8 +15,8 @@
  */
 
 #import "qruiAppDelegate.h"
-
 #import "DecoderController.h"
+#import "MainController.h"
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -24,21 +24,28 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 @implementation qruiAppDelegate
 
+@synthesize window = _window;
+@synthesize navigationController = _navigationController;
+@synthesize mainController = _mainController;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 - (void) applicationDidFinishLaunching:(UIApplication *)application {
     _window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    _decoderController = [[DecoderController alloc] initWithNibName:nil bundle:nil];
+    _mainController = [[MainController alloc] initWithNibName:nil bundle:nil];
+    _navigationController = [[UINavigationController alloc] initWithRootViewController:_mainController];
+    _navigationController.navigationBar.tintColor = [UIColor blackColor];
+    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackOpaque;
     
-    [_window addSubview:_decoderController.view];
+    [_window addSubview:_navigationController.view];
     [_window makeKeyAndVisible];
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 - (void) dealloc {
-    [_decoderController release];
-    [_window release];
+    self.navigationController = nil;
+    self.mainController = nil;
+    self.window = nil;
     [super dealloc];
 }
 

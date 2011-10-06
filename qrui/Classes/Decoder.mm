@@ -110,7 +110,7 @@
 
 - (void) decode:(id)arg {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    { 
+    {
         qrcode::QRCodeReader reader;
         Ref<MonochromeBitmapSource> grayImage(new GrayBytesMonochromeBitmapSource(_subsetData, _subsetWidth, _subsetHeight, _subsetBytesPerRow));
         TwoDDecoderResult *decoderResult = nil;
@@ -128,21 +128,21 @@
                 
                 for (size_t i = 0; i < resultPoints->size(); i++) {
                     Ref<ResultPoint> rp(resultPoints[i]);
-                    CGPoint p = CGPointMake(rp->getX(), rp->getY());
-                    [points addObject:[NSValue valueWithCGPoint:p]];
+                    CGPoint point = CGPointMake(rp->getX(), rp->getY());
+                    [points addObject:[NSValue valueWithCGPoint:point]];
                 }
                 
                 NSString *resultString = [NSString stringWithCString:cString encoding:NSUTF8StringEncoding];
                 decoderResult = [TwoDDecoderResult resultWithText:resultString points:points];
                 
             } catch (ReaderException rex) {
-                NSLog(@"failed to decode, caught ReaderException '%s'", rex.what());
+                //NSLog(@"failed to decode, caught ReaderException '%s'", rex.what());
                 
             } catch (IllegalArgumentException iex) {
-                NSLog(@"failed to decode, caught IllegalArgumentException '%s'", iex.what());
+                //NSLog(@"failed to decode, caught IllegalArgumentException '%s'", iex.what());
                 
             } catch (...) {
-                NSLog(@"Caught unknown exception!");
+                //NSLog(@"Caught unknown exception!");
             }
             
 #if TRY_ROTATIONS

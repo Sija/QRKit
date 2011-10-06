@@ -12,6 +12,9 @@
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765FC0DF74451002DB57D /* CoreGraphics.framework */; };
+		37844721143B2B9C001C9EFA /* MainController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3784471F143B2B9C001C9EFA /* MainController.m */; };
+		37844722143B2B9C001C9EFA /* MainController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 37844720143B2B9C001C9EFA /* MainController.xib */; };
+		37844724143E682D001C9EFA /* qrui-bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 37844723143E682D001C9EFA /* qrui-bg.png */; };
 		37B4F59C1439C83000812CD4 /* UIImage-Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 37B4F59B1439C83000812CD4 /* UIImage-Extensions.m */; };
 		37FA1307142B560E00913F1E /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37FA1306142B560E00913F1E /* AVFoundation.framework */; };
 		37FA130A142B565000913F1E /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37FA1308142B564F00913F1E /* CoreMedia.framework */; };
@@ -49,6 +52,10 @@
 		288765FC0DF74451002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		32CA4F630368D1EE00C91783 /* qrui_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = qrui_Prefix.pch; sourceTree = "<group>"; };
+		3784471E143B2B9C001C9EFA /* MainController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainController.h; sourceTree = "<group>"; };
+		3784471F143B2B9C001C9EFA /* MainController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainController.m; sourceTree = "<group>"; };
+		37844720143B2B9C001C9EFA /* MainController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainController.xib; sourceTree = "<group>"; };
+		37844723143E682D001C9EFA /* qrui-bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "qrui-bg.png"; sourceTree = "<group>"; };
 		37B4F59A1439C83000812CD4 /* UIImage-Extensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage-Extensions.h"; sourceTree = "<group>"; };
 		37B4F59B1439C83000812CD4 /* UIImage-Extensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage-Extensions.m"; sourceTree = "<group>"; };
 		37FA1306142B560E00913F1E /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -129,6 +136,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				37844723143E682D001C9EFA /* qrui-bg.png */,
 				8D1107310486CEB800E47090 /* qrui-Info.plist */,
 			);
 			name = Resources;
@@ -171,6 +179,9 @@
 				6E8D856610A0FC3200DB7C32 /* Overlay View */,
 				6E8D847A10A0EAFB00DB7C32 /* DecoderController.h */,
 				6E8D847B10A0EAFB00DB7C32 /* DecoderController.m */,
+				3784471E143B2B9C001C9EFA /* MainController.h */,
+				3784471F143B2B9C001C9EFA /* MainController.m */,
+				37844720143B2B9C001C9EFA /* MainController.xib */,
 			);
 			name = "Decoder Controller";
 			sourceTree = "<group>";
@@ -259,6 +270,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				37844722143B2B9C001C9EFA /* MainController.xib in Resources */,
+				37844724143E682D001C9EFA /* qrui-bg.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -275,6 +288,7 @@
 				6E8D856910A0FC4000DB7C32 /* OverlayView.m in Sources */,
 				6E8D895D10A1355000DB7C32 /* Decoder.mm in Sources */,
 				37B4F59C1439C83000812CD4 /* UIImage-Extensions.m in Sources */,
+				37844721143B2B9C001C9EFA /* MainController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

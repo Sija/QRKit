@@ -32,7 +32,8 @@
 }
 
 - initWithText:(NSString *)text points:(NSArray *)points {
-    if ((self = [super init]) != nil) {
+    self = [super init];
+    if (self) {
         self.text = text;
         self.points = points;
     }
