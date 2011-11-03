@@ -1,3 +1,4 @@
+// -*- mode:c++; tab-width:2; indent-tabs-mode:nil; c-basic-offset:2 -*-
 /*
  *  QRCodeReader.cpp
  *  zxing
@@ -77,5 +78,8 @@ namespace zxing {
 		QRCodeReader::~QRCodeReader() {
 		}
 		
+    Decoder& QRCodeReader::getDecoder() {
+        return decoder_;
+    }
 	}
 }
