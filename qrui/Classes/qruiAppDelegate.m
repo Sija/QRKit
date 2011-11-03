@@ -34,7 +34,6 @@
     _mainController = [[MainController alloc] initWithNibName:nil bundle:nil];
     _navigationController = [[UINavigationController alloc] initWithRootViewController:_mainController];
     _navigationController.navigationBar.tintColor = [UIColor blackColor];
-    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackOpaque;
     
     [_window addSubview:_navigationController.view];
     [_window makeKeyAndVisible];

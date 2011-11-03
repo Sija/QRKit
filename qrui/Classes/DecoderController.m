@@ -111,7 +111,7 @@
         [alertView show];
         
     } else {
-        if (nil != _overlayView) {
+        if (_decoding || _overlayView) {
             return;
         }
         //[self performSelector:@selector(startCapture) withObject:nil afterDelay:0.0];
@@ -167,7 +167,12 @@
 - (void) startCapture {
     _decoding = YES;
     
-    AVCaptureDeviceInput *captureInput = [AVCaptureDeviceInput deviceInputWithDevice:[AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo] error:nil];
+    AVCaptureDevice *captureDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+    AVCaptureDeviceInput *captureInput = [AVCaptureDeviceInput deviceInputWithDevice:captureDevice error:nil];
+    if (!captureInput) {
+        _decoding = NO;
+        return;
+    }
     AVCaptureVideoDataOutput *captureOutput = [[AVCaptureVideoDataOutput alloc] init]; 
     [captureOutput setAlwaysDiscardsLateVideoFrames:YES];
     [captureOutput setSampleBufferDelegate:self queue:dispatch_get_main_queue()];
