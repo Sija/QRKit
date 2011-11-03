@@ -22,11 +22,29 @@
 
 #import "Decoder.h"
 #import "TwoDDecoderResult.h"
+#import "FormatReader.h"
 
-#include "QRCodeReader.h"
-#include "ReaderException.h"
-#include "IllegalArgumentException.h"
-#include "GrayBytesMonochromeBitmapSource.h"
+#include <zxing/BinaryBitmap.h>
+#include <zxing/ReaderException.h>
+#include <zxing/common/IllegalArgumentException.h>
+#include <zxing/common/HybridBinarizer.h>
+#include <zxing/common/GreyscaleLuminanceSource.h>
+
+using namespace zxing;
+
+
+class ZXingDecoderCallback : public ResultPointCallback {
+private:
+    Decoder *_decoder;
+public:
+    ZXingDecoderCallback(Decoder *decoder) : _decoder(decoder) {}
+    void foundPossibleResultPoint(ResultPoint const& result) {
+        CGPoint point;
+        point.x = result.getX();
+        point.y = result.getY();
+        [_decoder resultPointCallback:point];
+    }
+};
 
 
 #ifndef TRY_ROTATIONS
@@ -38,6 +56,7 @@
 @implementation Decoder
 
 @synthesize image = _image;
+@synthesize readers = _readers;
 @synthesize cropRect = _cropRect;
 @synthesize subsetImage = _subsetImage;
 @synthesize subsetData = _subsetData;
@@ -46,15 +65,16 @@
 @synthesize subsetBytesPerRow = _subsetBytesPerRow;
 @synthesize delegate = _delegate;
 
-- (void) willDecodeImage {
-    [self.delegate decoder:self willDecodeImage:self.image usingSubset:self.subsetImage];
+- initWithDelegate:(id<DecoderDelegate>)delegate {
+    self = [super init];
+    if (self) {
+        self.delegate = delegate;
+    }
+    return self;
 }
 
-- (void) progressDecodingImage:(NSString *)progress {
-    [self.delegate decoder:self 
-             decodingImage:self.image 
-               usingSubset:self.subsetImage
-                  progress:progress];
+- (void) willDecodeImage {
+    [self.delegate decoder:self willDecodeImage:self.image usingSubset:self.subsetImage];
 }
 
 - (void) didDecodeImage:(TwoDDecoderResult *)result {
@@ -63,6 +83,12 @@
 
 - (void) failedToDecodeImage:(NSString *)reason {
     [self.delegate decoder:self failedToDecodeImage:self.image usingSubset:self.subsetImage reason:reason];
+}
+
+- (void) resultPointCallback:(CGPoint)point {
+    if ([self.delegate respondsToSelector:@selector(decoder:foundPossibleResultPoint:)]) {
+        [self.delegate decoder:self foundPossibleResultPoint:point];
+    }
 }
 
 - (void) prepareSubset {
@@ -108,62 +134,90 @@
     CGContextRelease(ctx);
 }
 
-- (void) decode:(id)arg {
+- (void) decode {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     {
-        qrcode::QRCodeReader reader;
-        Ref<MonochromeBitmapSource> grayImage(new GrayBytesMonochromeBitmapSource(_subsetData, _subsetWidth, _subsetHeight, _subsetBytesPerRow));
         TwoDDecoderResult *decoderResult = nil;
+        
+        Ref<LuminanceSource> source(new GreyscaleLuminanceSource(_subsetData, _subsetBytesPerRow, _subsetHeight, 0, 0, _subsetWidth, _subsetHeight));
+        Ref<Binarizer> binarizer(new HybridBinarizer(source));
+        source = NULL;
+        Ref<BinaryBitmap> grayImage(new BinaryBitmap(binarizer));
+        binarizer = NULL;
+        
+#ifdef DEBUG
+        NSLog(@"Created GreyscaleLuminanceSource(%p, %d, %d, %d, %d, %d, %d)",
+              _subsetData, _subsetBytesPerRow, _subsetHeight, 0, 0, _subsetWidth, _subsetHeight);
+        NSLog(@"grayImage count = %d", grayImage->count());
+#endif
         
 #if TRY_ROTATIONS
         for (int i = 0; !decoderResult && i < 4; i++) {
-#endif      
-            try {
-                Ref<Result> result(reader.decode(grayImage));
-                
-                Ref<String> resultText(result->getText());
-                const char *cString = resultText->getText().c_str();
-                ArrayRef<Ref<ResultPoint> > resultPoints = result->getResultPoints();
-                NSMutableArray *points = [NSMutableArray arrayWithCapacity:resultPoints->size()];
-                
-                for (size_t i = 0; i < resultPoints->size(); i++) {
-                    Ref<ResultPoint> rp(resultPoints[i]);
-                    CGPoint point = CGPointMake(rp->getX(), rp->getY());
-                    [points addObject:[NSValue valueWithCGPoint:point]];
+#endif
+            for (FormatReader *reader in self.readers) {
+                try {
+#ifdef DEBUG
+                    NSLog(@"Decoding gray image");
+#endif  
+                    ResultPointCallback* callback_pointer(new ZXingDecoderCallback(self));
+                    Ref<ResultPointCallback> callback(callback_pointer);
+                    Ref<Result> result([reader decode:grayImage andCallback:callback]);
+#ifdef DEBUG
+                    NSLog(@"Gray image decoded");
+#endif
+                    
+                    Ref<String> resultText(result->getText());
+                    const char *cString = resultText->getText().c_str();
+                    const std::vector<Ref<ResultPoint> > &resultPoints = result->getResultPoints();
+                    NSMutableArray *points = [NSMutableArray arrayWithCapacity:resultPoints.size()];
+                    
+                    for (size_t i = 0; i < resultPoints.size(); i++) {
+                        const Ref<ResultPoint> &rp = resultPoints[i];
+                        CGPoint point = CGPointMake(rp->getX(), rp->getY());
+                        [points addObject:[NSValue valueWithCGPoint:point]];
+                    }
+                    
+                    NSString *resultString = [NSString stringWithCString:cString encoding:NSUTF8StringEncoding];
+                    decoderResult = [TwoDDecoderResult resultWithText:resultString points:points];
+                    
+                } catch (ReaderException &rex) {
+#ifdef DEBUG
+                    NSLog(@"Failed to decode, caught ReaderException '%s'", rex.what());
+#endif
+                } catch (IllegalArgumentException &iex) {
+#ifdef DEBUG
+                    NSLog(@"Failed to decode, caught IllegalArgumentException '%s'", iex.what());
+#endif
+                } catch (...) {
+                    NSLog(@"Caught unknown exception!");
                 }
-                
-                NSString *resultString = [NSString stringWithCString:cString encoding:NSUTF8StringEncoding];
-                decoderResult = [TwoDDecoderResult resultWithText:resultString points:points];
-                
-            } catch (ReaderException rex) {
-                //NSLog(@"failed to decode, caught ReaderException '%s'", rex.what());
-                
-            } catch (IllegalArgumentException iex) {
-                //NSLog(@"failed to decode, caught IllegalArgumentException '%s'", iex.what());
-                
-            } catch (...) {
-                //NSLog(@"Caught unknown exception!");
             }
             
 #if TRY_ROTATIONS
             if (!decoderResult) {
+#ifdef DEBUG
+                NSLog(@"Rotating gray image");
+#endif
                 grayImage = grayImage->rotateCounterClockwise();
+#ifdef DEBUG
+                NSLog(@"Gray image rotated");
+#endif
             }
         }
 #endif
         
+        free(_subsetData);
+        self.subsetData = NULL;        
+        
         if (decoderResult) {
             [self performSelectorOnMainThread:@selector(didDecodeImage:)
-                                   withObject:decoderResult
+                                   withObject:[decoderResult copy]
                                 waitUntilDone:NO];
         } else {
             [self performSelectorOnMainThread:@selector(failedToDecodeImage:)
                                    withObject:NSLocalizedString(@"Decoder BarcodeDetectionFailure", @"No barcode detected.")
                                 waitUntilDone:NO];
         }
-        
-        free(_subsetData);
-        self.subsetData = NULL;
     }
     [pool release];
     
@@ -182,19 +236,14 @@
     self.cropRect = cropRect;
     
     [self prepareSubset];
-    [self.delegate decoder:self willDecodeImage:image usingSubset:self.subsetImage];
-    
-    
-    [self performSelectorOnMainThread:@selector(progressDecodingImage:)
-                           withObject:NSLocalizedString(@"Decoder MessageWhileDecoding", @"Decoding ...")
-                        waitUntilDone:NO];  
+    [self performSelectorOnMainThread:@selector(willDecodeImage) withObject:nil waitUntilDone:NO];
     
     /*
-    [NSThread detachNewThreadSelector:@selector(decode:) 
+    [NSThread detachNewThreadSelector:@selector(decode) 
                              toTarget:self 
                            withObject:nil];
      */
-    [self decode:nil];
+    [self performSelectorOnMainThread:@selector(decode) withObject:nil waitUntilDone:NO];
 }
 
 - (void) dealloc {

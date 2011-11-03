@@ -4,3 +4,4 @@ intermediates/
 *.pbxuser
 *.xcworkspace
 xcuserdata
+.svn

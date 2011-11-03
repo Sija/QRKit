@@ -16,6 +16,7 @@
 
 #import <AVFoundation/AVFoundation.h>
 #import "DecoderDelegate.h"
+#import "Sound.h"
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -46,9 +47,11 @@
     AVCaptureVideoDataOutputSampleBufferDelegate
 >
 
+@property (nonatomic, retain) NSSet *readers;
 @property (nonatomic, assign) id<DecoderControllerDelegate> delegate;
 @property (nonatomic, retain) OverlayView* overlayView;
 @property (nonatomic, retain) Decoder* decoder;
+@property (nonatomic, retain) Sound *soundToPlay;
 @property (nonatomic, assign, getter = isDecoding) BOOL decoding;
 @property (nonatomic, assign) BOOL wasStatusBarHidden;
 

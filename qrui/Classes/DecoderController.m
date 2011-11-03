@@ -40,9 +40,11 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 @implementation DecoderController
 
+@synthesize readers = _readers;
 @synthesize delegate = _delegate;
 @synthesize overlayView = _overlayView;
 @synthesize decoder = _decoder;
+@synthesize soundToPlay = _soundToPlay;
 @synthesize decoding = _decoding;
 @synthesize captureSession = _captureSession;
 @synthesize previewLayer = _previewLayer;
@@ -90,6 +92,7 @@
     self.delegate = nil;
     self.overlayView = nil;
     self.decoder = nil;
+    self.soundToPlay = nil;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -165,14 +168,13 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 - (void) startCapture {
-    _decoding = YES;
-    
     AVCaptureDevice *captureDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
     AVCaptureDeviceInput *captureInput = [AVCaptureDeviceInput deviceInputWithDevice:captureDevice error:nil];
     if (!captureInput) {
-        _decoding = NO;
         return;
     }
+    _decoding = YES;
+    
     AVCaptureVideoDataOutput *captureOutput = [[AVCaptureVideoDataOutput alloc] init]; 
     [captureOutput setAlwaysDiscardsLateVideoFrames:YES];
     [captureOutput setSampleBufferDelegate:self queue:dispatch_get_main_queue()];
@@ -187,47 +189,8 @@
     
     [_captureSession addInput:captureInput];
     [_captureSession addOutput:captureOutput];
-
     [captureOutput release];
-    
-    /*
-    [[NSNotificationCenter defaultCenter]
-     addObserver:self
-     selector:@selector(stopPreview:)
-     name:AVCaptureSessionDidStopRunningNotification
-     object:_captureSession];
-    
-    [[NSNotificationCenter defaultCenter]
-     addObserver:self
-     selector:@selector(notification:)
-     name:AVCaptureSessionDidStopRunningNotification
-     object:_captureSession];
-    
-    [[NSNotificationCenter defaultCenter]
-     addObserver:self
-     selector:@selector(notification:)
-     name:AVCaptureSessionRuntimeErrorNotification
-     object:_captureSession];
-    
-    [[NSNotificationCenter defaultCenter]
-     addObserver:self
-     selector:@selector(notification:)
-     name:AVCaptureSessionDidStartRunningNotification
-     object:_captureSession];
-    
-    [[NSNotificationCenter defaultCenter]
-     addObserver:self
-     selector:@selector(notification:)
-     name:AVCaptureSessionWasInterruptedNotification
-     object:_captureSession];
-    
-    [[NSNotificationCenter defaultCenter]
-     addObserver:self
-     selector:@selector(notification:)
-     name:AVCaptureSessionInterruptionEndedNotification
-     object:_captureSession];
-    */
-    
+        
     if (!_previewLayer) {
         _previewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:_captureSession];
     }
@@ -272,7 +235,6 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 - (void) captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection {
     if (!_decoding) {
-        //NSLog(@"Capturing while stopped!");
         return;
     }
     CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer); 
@@ -283,13 +245,12 @@
     size_t width = CVPixelBufferGetWidth(imageBuffer); 
     size_t height = CVPixelBufferGetHeight(imageBuffer); 
     
-    uint8_t *baseAddress = CVPixelBufferGetBaseAddress(imageBuffer); 
+    void *baseAddress = CVPixelBufferGetBaseAddress(imageBuffer); 
     void *free_me = NULL;
     if (true) { // iPhone 3G bug
-        uint8_t *tmp = baseAddress;
+        void *tmp = baseAddress;
         int bytes = bytesPerRow * height;
-        free_me = baseAddress = (uint8_t *) malloc(bytes);
-        baseAddress[0] = 0xdb;
+        free_me = baseAddress = malloc(bytes);
         memcpy(baseAddress, tmp, bytes);
     }
     
@@ -324,19 +285,15 @@
     
     UIImage *rotated = [image imageRotatedByDegrees:90.f];
 
+    // NOT thread safe
     if (nil == _decoder) {
-        _decoder = [[Decoder alloc] init];
-        _decoder.delegate = self;
+        _decoder = [[Decoder alloc] initWithDelegate:self];
+        _decoder.readers = _readers;
     }
-
-    //Decoder *decoder = [[Decoder alloc] init];
-    //decoder.delegate = self;
 
     cropRect.origin = CGPointZero;
     [_decoder decodeImage:rotated cropRect:cropRect];
-    
     [image release];
-    //[decoder release];
 } 
 
 
@@ -348,21 +305,19 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 - (void) decoder:(Decoder *)decoder willDecodeImage:(UIImage *)image usingSubset:(UIImage *)subset {
-    //NSLog(@"willDecodeImage");
-}
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) decoder:(Decoder *)decoder decodingImage:(UIImage *)image usingSubset:(UIImage *)subset progress:(NSString *)message {
-    //NSLog(@"decodingImage");
+#ifdef DEBUG
+    NSLog(@"decoder:willDecodeImage");
+#endif
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 - (void) decoder:(Decoder *)decoder didDecodeImage:(UIImage *)image usingSubset:(UIImage *)subset withResult:(TwoDDecoderResult *)result {
-    NSLog(@"didDecodeImage");
+#ifdef DEBUG
+    NSLog(@"decoder:didDecodeImage");
     NSLog(@"%@", result.text);
     NSLog(@"%@", result.points);
+#endif
     
     _overlayView.image = image;
     _overlayView.points = result.points;
@@ -373,17 +328,29 @@
     if ([self.delegate respondsToSelector:@selector(decoderController:didScanResult:)]) {
         [self.delegate decoderController:self didScanResult:result.text];
     }
+    if (self.soundToPlay) {
+        [self.soundToPlay play];
+    }
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 - (void) decoder:(Decoder *)decoder failedToDecodeImage:(UIImage *)image usingSubset:(UIImage *)subset reason:(NSString *)reason {
-    //NSLog(@"failedToDecodeImage");
+#ifdef DEBUG
+    NSLog(@"decoder:failedToDecodeImage:%@", reason);
+#endif
     
     _overlayView.image = nil;
     _overlayView.points = nil;
 }
 
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+- (void) decoder:(Decoder *)decoder foundPossibleResultPoint:(CGPoint)point {
+#ifdef DEBUG
+    NSLog(@"decoder:foundPossibleResultPoint:%@", NSStringFromCGPoint(point));
+#endif
+}
 
 @end
 

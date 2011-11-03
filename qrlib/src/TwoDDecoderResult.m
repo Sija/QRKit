@@ -40,10 +40,25 @@
     return self;
 }
 
+- copyWithZone:(NSZone *)zone {
+    NSArray* newPoints = [[[NSArray alloc] initWithArray:_points] autorelease];
+    NSString* newText = [[[NSString alloc] initWithString:_text] autorelease];
+    
+    return [[[self class] allocWithZone:zone] initWithText:newText points:newPoints];
+}
+
+- copy {
+    return [self copyWithZone:nil];
+}
+
 - (void) dealloc {
     self.text = nil;
     self.points = nil;
     [super dealloc];
+}
+
+- (NSString *) description {
+    return [NSString stringWithFormat:@"<%@: %p> %@", [self class], self, self.text];
 }
 
 @end

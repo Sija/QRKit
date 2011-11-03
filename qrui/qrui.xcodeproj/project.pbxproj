@@ -12,7 +12,10 @@
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765FC0DF74451002DB57D /* CoreGraphics.framework */; };
-		37844721143B2B9C001C9EFA /* MainController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3784471F143B2B9C001C9EFA /* MainController.m */; };
+		376805831462DF980049249A /* Sound.m in Sources */ = {isa = PBXBuildFile; fileRef = 376805821462DF980049249A /* Sound.m */; };
+		376805851462E22B0049249A /* beep-beep.aiff in Resources */ = {isa = PBXBuildFile; fileRef = 376805841462E22B0049249A /* beep-beep.aiff */; };
+		376805871462E2980049249A /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 376805861462E2980049249A /* AudioToolbox.framework */; };
+		37844721143B2B9C001C9EFA /* MainController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3784471F143B2B9C001C9EFA /* MainController.mm */; };
 		37844722143B2B9C001C9EFA /* MainController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 37844720143B2B9C001C9EFA /* MainController.xib */; };
 		37844724143E682D001C9EFA /* qrui-bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 37844723143E682D001C9EFA /* qrui-bg.png */; };
 		37B4F59C1439C83000812CD4 /* UIImage-Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 37B4F59B1439C83000812CD4 /* UIImage-Extensions.m */; };
@@ -52,8 +55,12 @@
 		288765FC0DF74451002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		32CA4F630368D1EE00C91783 /* qrui_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = qrui_Prefix.pch; sourceTree = "<group>"; };
+		376805811462DF980049249A /* Sound.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Sound.h; sourceTree = "<group>"; };
+		376805821462DF980049249A /* Sound.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Sound.m; sourceTree = "<group>"; };
+		376805841462E22B0049249A /* beep-beep.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = "beep-beep.aiff"; sourceTree = "<group>"; };
+		376805861462E2980049249A /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		3784471E143B2B9C001C9EFA /* MainController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainController.h; sourceTree = "<group>"; };
-		3784471F143B2B9C001C9EFA /* MainController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainController.m; sourceTree = "<group>"; };
+		3784471F143B2B9C001C9EFA /* MainController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MainController.mm; sourceTree = "<group>"; };
 		37844720143B2B9C001C9EFA /* MainController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainController.xib; sourceTree = "<group>"; };
 		37844723143E682D001C9EFA /* qrui-bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "qrui-bg.png"; sourceTree = "<group>"; };
 		37B4F59A1439C83000812CD4 /* UIImage-Extensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage-Extensions.h"; sourceTree = "<group>"; };
@@ -77,6 +84,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				376805871462E2980049249A /* AudioToolbox.framework in Frameworks */,
 				37FA130A142B565000913F1E /* CoreMedia.framework in Frameworks */,
 				37FA130B142B565000913F1E /* CoreVideo.framework in Frameworks */,
 				37FA1307142B560E00913F1E /* AVFoundation.framework in Frameworks */,
@@ -94,11 +102,16 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				376805811462DF980049249A /* Sound.h */,
+				376805821462DF980049249A /* Sound.m */,
 				37B4F59D1439DB4D00812CD4 /* Extensions */,
 				6E8D895E10A1355200DB7C32 /* Decoder */,
 				6E8D847910A0EAD900DB7C32 /* Decoder Controller */,
 				1D3623240D0F684500981E51 /* qruiAppDelegate.h */,
 				1D3623250D0F684500981E51 /* qruiAppDelegate.m */,
+				3784471E143B2B9C001C9EFA /* MainController.h */,
+				3784471F143B2B9C001C9EFA /* MainController.mm */,
+				37844720143B2B9C001C9EFA /* MainController.xib */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -136,6 +149,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				376805841462E22B0049249A /* beep-beep.aiff */,
 				37844723143E682D001C9EFA /* qrui-bg.png */,
 				8D1107310486CEB800E47090 /* qrui-Info.plist */,
 			);
@@ -146,6 +160,7 @@
 			isa = PBXGroup;
 			children = (
 				6E8D846710A0EA8900DB7C32 /* qrlib.xcodeproj */,
+				376805861462E2980049249A /* AudioToolbox.framework */,
 				37FA1306142B560E00913F1E /* AVFoundation.framework */,
 				1DF5F4DF0D08C38300B7A737 /* UIKit.framework */,
 				1D30AB110D05D00D00671497 /* Foundation.framework */,
@@ -179,9 +194,6 @@
 				6E8D856610A0FC3200DB7C32 /* Overlay View */,
 				6E8D847A10A0EAFB00DB7C32 /* DecoderController.h */,
 				6E8D847B10A0EAFB00DB7C32 /* DecoderController.m */,
-				3784471E143B2B9C001C9EFA /* MainController.h */,
-				3784471F143B2B9C001C9EFA /* MainController.m */,
-				37844720143B2B9C001C9EFA /* MainController.xib */,
 			);
 			name = "Decoder Controller";
 			sourceTree = "<group>";
@@ -272,6 +284,7 @@
 			files = (
 				37844722143B2B9C001C9EFA /* MainController.xib in Resources */,
 				37844724143E682D001C9EFA /* qrui-bg.png in Resources */,
+				376805851462E22B0049249A /* beep-beep.aiff in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -288,7 +301,8 @@
 				6E8D856910A0FC4000DB7C32 /* OverlayView.m in Sources */,
 				6E8D895D10A1355000DB7C32 /* Decoder.mm in Sources */,
 				37B4F59C1439C83000812CD4 /* UIImage-Extensions.m in Sources */,
-				37844721143B2B9C001C9EFA /* MainController.m in Sources */,
+				37844721143B2B9C001C9EFA /* MainController.mm in Sources */,
+				376805831462DF980049249A /* Sound.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -307,6 +321,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = armv6;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = YES;
@@ -332,6 +347,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = armv6;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				DEAD_CODE_STRIPPING = YES;
@@ -355,9 +371,11 @@
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_PREPROCESSOR_DEFINITIONS = "DEBUG=1";
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = ../qrlib;
 				SDKROOT = iphoneos;
 				USER_HEADER_SEARCH_PATHS = "";
 			};
@@ -366,12 +384,13 @@
 		C01FCF5008A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = armv6;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = ../qrlib;
 				SDKROOT = iphoneos;
 				USER_HEADER_SEARCH_PATHS = "";
 			};
