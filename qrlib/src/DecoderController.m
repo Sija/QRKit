@@ -29,6 +29,8 @@
 @property (nonatomic, retain) AVCaptureSession*           captureSession;
 @property (nonatomic, retain) AVCaptureVideoPreviewLayer* previewLayer;
 
+@property (nonatomic, assign) BOOL                        wasStatusBarHidden;
+@property (nonatomic, assign, getter = isDecoding) BOOL   decoding;
 - (void) startCapture;
 - (void) stopCapture;
 
@@ -73,14 +75,13 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 - (void) dealloc {
     [self viewDidUnload];
-    
     [super dealloc];
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-- (void) loadView {
-    [super loadView];
+- (void) viewDidLoad {
+    [super viewDidLoad];
 }
 
 
@@ -117,6 +118,8 @@
         if (_decoding || _overlayView) {
             return;
         }
+        self.view.frame = CGRectMake(0, 0, 320, 480); // TODO: why i need this?
+        
         //[self performSelector:@selector(startCapture) withObject:nil afterDelay:0.0];
         [self startCapture];
     }
@@ -195,12 +198,13 @@
         _previewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:_captureSession];
     }
     // NSLog(@"prev %p %@", _previewLayer, _previewLayer);
+    
     _previewLayer.frame = self.view.bounds;
     _previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
     [self.view.layer addSublayer:_previewLayer];
     
     if (!_overlayView) {
-        _overlayView = [[OverlayView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+        _overlayView = [[OverlayView alloc] initWithFrame:_previewLayer.frame];
         [self.view addSubview:_overlayView];
     }
     [_captureSession performSelector:@selector(startRunning) withObject:nil afterDelay:0.0];

@@ -27,7 +27,7 @@
     self.scanButton = nil;
 }
 
-#pragma mark - MainViewController
+#pragma mark - MainController
 
 - (IBAction) scan {
     QRCodeReader *qrcodeReader = [[QRCodeReader alloc] init];

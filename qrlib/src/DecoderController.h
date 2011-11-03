@@ -52,8 +52,6 @@
 @property (nonatomic, retain) OverlayView* overlayView;
 @property (nonatomic, retain) Decoder* decoder;
 @property (nonatomic, retain) Sound *successSound;
-@property (nonatomic, assign, getter = isDecoding) BOOL decoding;
-@property (nonatomic, assign) BOOL wasStatusBarHidden;
 
 - (id) initWithDelegate:(id<DecoderControllerDelegate>)delegate showCancel:(BOOL)shouldShowCancel;
 
