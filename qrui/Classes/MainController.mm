@@ -15,7 +15,6 @@
 
 - (void) dealloc {
     [self viewDidUnload];
-    
     [super dealloc];
 }
 
@@ -37,6 +36,7 @@
     decoderController.successSound = [Sound soundNamed:@"beep-beep.aiff"];
 
     [self presentModalViewController:decoderController animated:YES];
+    [qrcodeReader release];
     [decoderController release];
 }
 

@@ -31,6 +31,7 @@
 
 @property (nonatomic, assign) BOOL                        wasStatusBarHidden;
 @property (nonatomic, assign, getter = isDecoding) BOOL   decoding;
+
 - (void) startCapture;
 - (void) stopCapture;
 
@@ -111,7 +112,6 @@
                                   delegate:self
                                   cancelButtonTitle:@"Darn"
                                   otherButtonTitles:nil];
-        
         [alertView show];
         
     } else {
