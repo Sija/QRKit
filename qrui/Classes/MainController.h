@@ -14,6 +14,6 @@
 
 @property (nonatomic, retain) IBOutlet UIButton *scanButton;
 
-- (IBAction) scan:(id)sender;
+- (IBAction) scan;
 
 @end

@@ -777,17 +777,9 @@
 				376805791462D1E20049249A /* FormatReader.mm */,
 				3768057D1462D8280049249A /* QRCodeReader.h */,
 				3768057E1462D8280049249A /* QRCodeReader.mm */,
-				6E8D894510A1331600DB7C32 /* Decoder */,
 			);
 			name = Classes;
 			path = src;
-			sourceTree = "<group>";
-		};
-		6E8D894510A1331600DB7C32 /* Decoder */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Decoder;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

@@ -12,8 +12,8 @@
 }
 
 // Path is relative to the resources dir.
-+ soundWithPath:(NSString *)path;
-- initWithPath:(NSString *)path;
++ soundNamed:(NSString *)name;
+- initWithContentsOfFile:(NSString *)path;
 
 - (void) play;
 

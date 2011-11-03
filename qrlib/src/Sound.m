@@ -2,12 +2,12 @@
 
 @implementation Sound
 
-+ soundWithPath:(NSString *)path
++ soundNamed:(NSString *)name
 {
-    return [[[self alloc] initWithPath:path] autorelease];
+    return [[[self alloc] initWithContentsOfFile:name] autorelease];
 }
 
-- initWithPath:(NSString *)path
+- initWithContentsOfFile:(NSString *)path
 {
     if (self = [super init]) {
         NSString *const resourceDir = [[NSBundle mainBundle] resourcePath];

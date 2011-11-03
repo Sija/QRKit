@@ -29,12 +29,12 @@
 
 #pragma mark - MainViewController
 
-- (IBAction) scan:(id)sender {
+- (IBAction) scan {
     QRCodeReader *qrcodeReader = [[QRCodeReader alloc] init];
     
     DecoderController *decoderController = [[DecoderController alloc] initWithDelegate:self showCancel:YES];
     decoderController.readers = [NSSet setWithObject:qrcodeReader];
-    decoderController.soundToPlay = [Sound soundWithPath:@"beep-beep.aiff"];
+    decoderController.successSound = [Sound soundNamed:@"beep-beep.aiff"];
 
     [self presentModalViewController:decoderController animated:YES];
     [decoderController release];

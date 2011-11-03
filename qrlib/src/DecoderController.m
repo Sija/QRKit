@@ -44,7 +44,7 @@
 @synthesize delegate = _delegate;
 @synthesize overlayView = _overlayView;
 @synthesize decoder = _decoder;
-@synthesize soundToPlay = _soundToPlay;
+@synthesize successSound = _successSound;
 @synthesize decoding = _decoding;
 @synthesize captureSession = _captureSession;
 @synthesize previewLayer = _previewLayer;
@@ -92,7 +92,7 @@
     self.delegate = nil;
     self.overlayView = nil;
     self.decoder = nil;
-    self.soundToPlay = nil;
+    self.successSound = nil;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -328,8 +328,8 @@
     if ([self.delegate respondsToSelector:@selector(decoderController:didScanResult:)]) {
         [self.delegate decoderController:self didScanResult:result.text];
     }
-    if (self.soundToPlay) {
-        [self.soundToPlay play];
+    if (self.successSound) {
+        [self.successSound play];
     }
 }
 
