@@ -30,7 +30,6 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 @protocol DecoderControllerDelegate <NSObject>
-
 @optional
 - (void) decoderController:(DecoderController *)controller didScanResult:(NSString *)result;
 - (void) decoderControllerDidCancel:(DecoderController *)controller;
@@ -42,9 +41,8 @@
 @interface DecoderController : UIViewController <
     UIAlertViewDelegate,
     UINavigationControllerDelegate,
-    UIImagePickerControllerDelegate,
-    DecoderDelegate,
-    AVCaptureVideoDataOutputSampleBufferDelegate
+    AVCaptureVideoDataOutputSampleBufferDelegate,
+    DecoderDelegate
 >
 
 @property (nonatomic, retain) NSSet *readers;

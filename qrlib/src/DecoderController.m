@@ -193,7 +193,7 @@
     [_captureSession addInput:captureInput];
     [_captureSession addOutput:captureOutput];
     [captureOutput release];
-        
+    
     if (!_previewLayer) {
         _previewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:_captureSession];
     }
