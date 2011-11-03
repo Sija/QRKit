@@ -24,48 +24,48 @@
 
 static NSMutableSet *sFormatReaders = nil;
 
-+ (void)registerFormatReader:(FormatReader*)formatReader {
-  NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-  @synchronized(self) {
-    if (!sFormatReaders) {
-      sFormatReaders = [[NSMutableSet alloc] init];
++ (void) registerFormatReader:(FormatReader*)formatReader {
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    @synchronized (self) {
+        if (!sFormatReaders) {
+            sFormatReaders = [[NSMutableSet alloc] init];
+        }
+        [sFormatReaders addObject:formatReader];
     }
-    [sFormatReaders addObject:formatReader];
-  }
-  [pool drain];
+    [pool drain];
 }
 
 /*
-+ (NSSet *)formatReaders {
-  NSSet *formatReaders = nil;
-  @synchronized(self) {
+ + (NSSet *) formatReaders {
+    NSSet *formatReaders = nil;
+    @synchronized (self) {
+        formatReaders = [[sFormatReaders copy] autorelease];
+    }
+    return formatReaders;
+ }
+ */
 
-    formatReaders = [[sFormatReaders copy] autorelease];
-  }
-  return formatReaders;
-}
-*/
-
-- (id)initWithReader:(zxing::Reader *)reader {
-  if ((self = [super init])) {
-    reader_ = reader;
-  }
-  return self;
-}
-
-- (void)dealloc {
-  delete reader_;
-  [super dealloc];
+- initWithReader:(zxing::Reader *)reader {
+    self = [super init];
+    if (self) {
+        _reader = reader;
+    }
+    return self;
 }
 
-- (zxing::Ref<zxing::Result>)decode:(zxing::Ref<zxing::BinaryBitmap>)grayImage {
-  return reader_->decode(grayImage);
+- (void) dealloc {
+    delete _reader;
+    [super dealloc];
 }
 
-- (zxing::Ref<zxing::Result>)decode:(zxing::Ref<zxing::BinaryBitmap>)grayImage andCallback:(zxing::Ref<zxing::ResultPointCallback>)callback {
+- (zxing::Ref<zxing::Result>) decode:(zxing::Ref<zxing::BinaryBitmap>)grayImage {
+    return _reader->decode(grayImage);
+}
+
+- (zxing::Ref<zxing::Result>) decode:(zxing::Ref<zxing::BinaryBitmap>)grayImage andCallback:(zxing::Ref<zxing::ResultPointCallback>)callback {
     zxing::DecodeHints hints;
     hints.setResultPointCallback(callback);
-    return reader_->decode(grayImage, hints);
+    return _reader->decode(grayImage, hints);
 }
 
 @end

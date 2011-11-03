@@ -12,21 +12,16 @@
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765FC0DF74451002DB57D /* CoreGraphics.framework */; };
-		376805831462DF980049249A /* Sound.m in Sources */ = {isa = PBXBuildFile; fileRef = 376805821462DF980049249A /* Sound.m */; };
 		376805851462E22B0049249A /* beep-beep.aiff in Resources */ = {isa = PBXBuildFile; fileRef = 376805841462E22B0049249A /* beep-beep.aiff */; };
 		376805871462E2980049249A /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 376805861462E2980049249A /* AudioToolbox.framework */; };
 		37844721143B2B9C001C9EFA /* MainController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3784471F143B2B9C001C9EFA /* MainController.mm */; };
 		37844722143B2B9C001C9EFA /* MainController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 37844720143B2B9C001C9EFA /* MainController.xib */; };
 		37844724143E682D001C9EFA /* qrui-bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 37844723143E682D001C9EFA /* qrui-bg.png */; };
-		37B4F59C1439C83000812CD4 /* UIImage-Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 37B4F59B1439C83000812CD4 /* UIImage-Extensions.m */; };
 		37FA1307142B560E00913F1E /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37FA1306142B560E00913F1E /* AVFoundation.framework */; };
 		37FA130A142B565000913F1E /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37FA1308142B564F00913F1E /* CoreMedia.framework */; };
 		37FA130B142B565000913F1E /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37FA1309142B564F00913F1E /* CoreVideo.framework */; };
 		6E8D846D10A0EA8D00DB7C32 /* libqrlib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E8D846C10A0EA8900DB7C32 /* libqrlib.a */; };
-		6E8D847C10A0EAFB00DB7C32 /* DecoderController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E8D847B10A0EAFB00DB7C32 /* DecoderController.m */; };
-		6E8D856910A0FC4000DB7C32 /* OverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E8D856810A0FC4000DB7C32 /* OverlayView.m */; };
 		6E8D877510A108B500DB7C32 /* libiconv.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E8D877410A108B500DB7C32 /* libiconv.2.dylib */; };
-		6E8D895D10A1355000DB7C32 /* Decoder.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6E8D895B10A1355000DB7C32 /* Decoder.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,27 +50,17 @@
 		288765FC0DF74451002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		32CA4F630368D1EE00C91783 /* qrui_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = qrui_Prefix.pch; sourceTree = "<group>"; };
-		376805811462DF980049249A /* Sound.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Sound.h; sourceTree = "<group>"; };
-		376805821462DF980049249A /* Sound.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Sound.m; sourceTree = "<group>"; };
 		376805841462E22B0049249A /* beep-beep.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = "beep-beep.aiff"; sourceTree = "<group>"; };
 		376805861462E2980049249A /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		3784471E143B2B9C001C9EFA /* MainController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainController.h; sourceTree = "<group>"; };
 		3784471F143B2B9C001C9EFA /* MainController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MainController.mm; sourceTree = "<group>"; };
 		37844720143B2B9C001C9EFA /* MainController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainController.xib; sourceTree = "<group>"; };
 		37844723143E682D001C9EFA /* qrui-bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "qrui-bg.png"; sourceTree = "<group>"; };
-		37B4F59A1439C83000812CD4 /* UIImage-Extensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage-Extensions.h"; sourceTree = "<group>"; };
-		37B4F59B1439C83000812CD4 /* UIImage-Extensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage-Extensions.m"; sourceTree = "<group>"; };
 		37FA1306142B560E00913F1E /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		37FA1308142B564F00913F1E /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		37FA1309142B564F00913F1E /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		6E8D846710A0EA8900DB7C32 /* qrlib.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = qrlib.xcodeproj; path = ../qrlib/qrlib.xcodeproj; sourceTree = SOURCE_ROOT; };
-		6E8D847A10A0EAFB00DB7C32 /* DecoderController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DecoderController.h; sourceTree = "<group>"; };
-		6E8D847B10A0EAFB00DB7C32 /* DecoderController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DecoderController.m; sourceTree = "<group>"; };
-		6E8D856710A0FC4000DB7C32 /* OverlayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OverlayView.h; sourceTree = "<group>"; };
-		6E8D856810A0FC4000DB7C32 /* OverlayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OverlayView.m; sourceTree = "<group>"; };
 		6E8D877410A108B500DB7C32 /* libiconv.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.2.dylib; path = usr/lib/libiconv.2.dylib; sourceTree = SDKROOT; };
-		6E8D895B10A1355000DB7C32 /* Decoder.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Decoder.mm; sourceTree = "<group>"; };
-		6E8D895C10A1355000DB7C32 /* Decoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Decoder.h; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* qrui-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "qrui-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -102,11 +87,6 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				376805811462DF980049249A /* Sound.h */,
-				376805821462DF980049249A /* Sound.m */,
-				37B4F59D1439DB4D00812CD4 /* Extensions */,
-				6E8D895E10A1355200DB7C32 /* Decoder */,
-				6E8D847910A0EAD900DB7C32 /* Decoder Controller */,
 				1D3623240D0F684500981E51 /* qruiAppDelegate.h */,
 				1D3623250D0F684500981E51 /* qruiAppDelegate.m */,
 				3784471E143B2B9C001C9EFA /* MainController.h */,
@@ -171,49 +151,12 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		37B4F59D1439DB4D00812CD4 /* Extensions */ = {
-			isa = PBXGroup;
-			children = (
-				37B4F59A1439C83000812CD4 /* UIImage-Extensions.h */,
-				37B4F59B1439C83000812CD4 /* UIImage-Extensions.m */,
-			);
-			name = Extensions;
-			sourceTree = "<group>";
-		};
 		6E8D846810A0EA8900DB7C32 /* Products */ = {
 			isa = PBXGroup;
 			children = (
 				6E8D846C10A0EA8900DB7C32 /* libqrlib.a */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		6E8D847910A0EAD900DB7C32 /* Decoder Controller */ = {
-			isa = PBXGroup;
-			children = (
-				6E8D856610A0FC3200DB7C32 /* Overlay View */,
-				6E8D847A10A0EAFB00DB7C32 /* DecoderController.h */,
-				6E8D847B10A0EAFB00DB7C32 /* DecoderController.m */,
-			);
-			name = "Decoder Controller";
-			sourceTree = "<group>";
-		};
-		6E8D856610A0FC3200DB7C32 /* Overlay View */ = {
-			isa = PBXGroup;
-			children = (
-				6E8D856710A0FC4000DB7C32 /* OverlayView.h */,
-				6E8D856810A0FC4000DB7C32 /* OverlayView.m */,
-			);
-			name = "Overlay View";
-			sourceTree = "<group>";
-		};
-		6E8D895E10A1355200DB7C32 /* Decoder */ = {
-			isa = PBXGroup;
-			children = (
-				6E8D895C10A1355000DB7C32 /* Decoder.h */,
-				6E8D895B10A1355000DB7C32 /* Decoder.mm */,
-			);
-			name = Decoder;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -297,12 +240,7 @@
 			files = (
 				1D60589B0D05DD56006BFB54 /* main.m in Sources */,
 				1D3623260D0F684500981E51 /* qruiAppDelegate.m in Sources */,
-				6E8D847C10A0EAFB00DB7C32 /* DecoderController.m in Sources */,
-				6E8D856910A0FC4000DB7C32 /* OverlayView.m in Sources */,
-				6E8D895D10A1355000DB7C32 /* Decoder.mm in Sources */,
-				37B4F59C1439C83000812CD4 /* UIImage-Extensions.m in Sources */,
 				37844721143B2B9C001C9EFA /* MainController.mm in Sources */,
-				376805831462DF980049249A /* Sound.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -368,7 +306,7 @@
 		C01FCF4F08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = armv6;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_PREPROCESSOR_DEFINITIONS = "DEBUG=1";
@@ -384,7 +322,7 @@
 		C01FCF5008A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = armv6;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;

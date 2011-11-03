@@ -26,14 +26,15 @@
 #import <zxing/ResultPointCallback.h>
 
 @interface FormatReader : NSObject {
-  zxing::Reader *reader_;
+@private
+  zxing::Reader *_reader;
 }
 
-+ (void)registerFormatReader:(FormatReader *)formatReader;
-//+ (NSSet *)formatReaders;
++ (void) registerFormatReader:(FormatReader *)formatReader;
+//+ (NSSet *) formatReaders;
 
-- (id)initWithReader:(zxing::Reader *)reader;
-- (zxing::Ref<zxing::Result>)decode:(zxing::Ref<zxing::BinaryBitmap>)grayImage;
-- (zxing::Ref<zxing::Result>)decode:(zxing::Ref<zxing::BinaryBitmap>)grayImage andCallback:(zxing::Ref<zxing::ResultPointCallback>)callback;
+- initWithReader:(zxing::Reader *)reader;
+- (zxing::Ref<zxing::Result>) decode:(zxing::Ref<zxing::BinaryBitmap>)grayImage;
+- (zxing::Ref<zxing::Result>) decode:(zxing::Ref<zxing::BinaryBitmap>)grayImage andCallback:(zxing::Ref<zxing::ResultPointCallback>)callback;
 
 @end

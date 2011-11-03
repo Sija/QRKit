@@ -12,7 +12,7 @@
 
 @implementation QRCodeReader
 
-- (id) init {
+- init {
   zxing::qrcode::QRCodeReader *reader = new zxing::qrcode::QRCodeReader();
   return [super initWithReader:reader];
 }

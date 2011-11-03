@@ -180,6 +180,16 @@
 		376806E51462EE7E0049249A /* ResultPoint.h in Headers */ = {isa = PBXBuildFile; fileRef = 3768063C1462EE7D0049249A /* ResultPoint.h */; };
 		376806E61462EE7E0049249A /* ResultPointCallback.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3768063D1462EE7D0049249A /* ResultPointCallback.cpp */; };
 		376806E71462EE7E0049249A /* ResultPointCallback.h in Headers */ = {isa = PBXBuildFile; fileRef = 3768063E1462EE7D0049249A /* ResultPointCallback.h */; };
+		376806F31462F0D50049249A /* Decoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 376806E91462F0D40049249A /* Decoder.h */; };
+		376806F41462F0D50049249A /* Decoder.mm in Sources */ = {isa = PBXBuildFile; fileRef = 376806EA1462F0D40049249A /* Decoder.mm */; };
+		376806F51462F0D50049249A /* DecoderController.h in Headers */ = {isa = PBXBuildFile; fileRef = 376806EB1462F0D40049249A /* DecoderController.h */; };
+		376806F61462F0D50049249A /* DecoderController.m in Sources */ = {isa = PBXBuildFile; fileRef = 376806EC1462F0D40049249A /* DecoderController.m */; };
+		376806F71462F0D50049249A /* OverlayView.h in Headers */ = {isa = PBXBuildFile; fileRef = 376806ED1462F0D40049249A /* OverlayView.h */; };
+		376806F81462F0D50049249A /* OverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = 376806EE1462F0D40049249A /* OverlayView.m */; };
+		376806F91462F0D50049249A /* Sound.h in Headers */ = {isa = PBXBuildFile; fileRef = 376806EF1462F0D40049249A /* Sound.h */; };
+		376806FA1462F0D50049249A /* Sound.m in Sources */ = {isa = PBXBuildFile; fileRef = 376806F01462F0D50049249A /* Sound.m */; };
+		376806FB1462F0D50049249A /* UIImage-Extensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 376806F11462F0D50049249A /* UIImage-Extensions.h */; };
+		376806FC1462F0D50049249A /* UIImage-Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 376806F21462F0D50049249A /* UIImage-Extensions.m */; };
 		6E8D894810A1332200DB7C32 /* TwoDDecoderResult.h in Headers */ = {isa = PBXBuildFile; fileRef = 6E8D894610A1332200DB7C32 /* TwoDDecoderResult.h */; };
 		6E8D894910A1332200DB7C32 /* TwoDDecoderResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E8D894710A1332200DB7C32 /* TwoDDecoderResult.m */; };
 		6E8D894F10A1333F00DB7C32 /* DecoderDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 6E8D894E10A1333F00DB7C32 /* DecoderDelegate.h */; };
@@ -361,6 +371,16 @@
 		3768063C1462EE7D0049249A /* ResultPoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ResultPoint.h; sourceTree = "<group>"; };
 		3768063D1462EE7D0049249A /* ResultPointCallback.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ResultPointCallback.cpp; sourceTree = "<group>"; };
 		3768063E1462EE7D0049249A /* ResultPointCallback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ResultPointCallback.h; sourceTree = "<group>"; };
+		376806E91462F0D40049249A /* Decoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Decoder.h; sourceTree = "<group>"; };
+		376806EA1462F0D40049249A /* Decoder.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Decoder.mm; sourceTree = "<group>"; };
+		376806EB1462F0D40049249A /* DecoderController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DecoderController.h; sourceTree = "<group>"; };
+		376806EC1462F0D40049249A /* DecoderController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DecoderController.m; sourceTree = "<group>"; };
+		376806ED1462F0D40049249A /* OverlayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OverlayView.h; sourceTree = "<group>"; };
+		376806EE1462F0D40049249A /* OverlayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OverlayView.m; sourceTree = "<group>"; };
+		376806EF1462F0D40049249A /* Sound.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Sound.h; sourceTree = "<group>"; };
+		376806F01462F0D50049249A /* Sound.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Sound.m; sourceTree = "<group>"; };
+		376806F11462F0D50049249A /* UIImage-Extensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage-Extensions.h"; sourceTree = "<group>"; };
+		376806F21462F0D50049249A /* UIImage-Extensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage-Extensions.m"; sourceTree = "<group>"; };
 		6E8D894610A1332200DB7C32 /* TwoDDecoderResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TwoDDecoderResult.h; sourceTree = "<group>"; };
 		6E8D894710A1332200DB7C32 /* TwoDDecoderResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TwoDDecoderResult.m; sourceTree = "<group>"; };
 		6E8D894E10A1333F00DB7C32 /* DecoderDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DecoderDelegate.h; sourceTree = "<group>"; };
@@ -392,8 +412,8 @@
 		0867D691FE84028FC02AAC07 /* qrlib */ = {
 			isa = PBXGroup;
 			children = (
-				6E8D860F10A1047000DB7C32 /* src */,
-				376805881462EE7D0049249A /* zxing */,
+				6E8D860F10A1047000DB7C32 /* Classes */,
+				376806E81462F0700049249A /* Dependencies */,
 				32C88DFF0371C24200C91783 /* Other Sources */,
 				0867D69AFE84028FC02AAC07 /* Frameworks */,
 				034768DFFF38A50411DB9C8B /* Products */,
@@ -697,24 +717,75 @@
 			path = detector;
 			sourceTree = "<group>";
 		};
-		6E8D860F10A1047000DB7C32 /* src */ = {
+		376806E81462F0700049249A /* Dependencies */ = {
 			isa = PBXGroup;
 			children = (
-				3768057D1462D8280049249A /* QRCodeReader.h */,
-				3768057E1462D8280049249A /* QRCodeReader.mm */,
+				376805881462EE7D0049249A /* zxing */,
+			);
+			name = Dependencies;
+			sourceTree = "<group>";
+		};
+		376806FD1462F0DE0049249A /* Decoder */ = {
+			isa = PBXGroup;
+			children = (
+				6E8D894610A1332200DB7C32 /* TwoDDecoderResult.h */,
+				6E8D894710A1332200DB7C32 /* TwoDDecoderResult.m */,
+				6E8D894E10A1333F00DB7C32 /* DecoderDelegate.h */,
+				376806E91462F0D40049249A /* Decoder.h */,
+				376806EA1462F0D40049249A /* Decoder.mm */,
+			);
+			name = Decoder;
+			sourceTree = "<group>";
+		};
+		376806FE1462F0EB0049249A /* Decoder Controller */ = {
+			isa = PBXGroup;
+			children = (
+				376806FF1462F0F80049249A /* Overlay View */,
+				376806EB1462F0D40049249A /* DecoderController.h */,
+				376806EC1462F0D40049249A /* DecoderController.m */,
+			);
+			name = "Decoder Controller";
+			sourceTree = "<group>";
+		};
+		376806FF1462F0F80049249A /* Overlay View */ = {
+			isa = PBXGroup;
+			children = (
+				376806ED1462F0D40049249A /* OverlayView.h */,
+				376806EE1462F0D40049249A /* OverlayView.m */,
+			);
+			name = "Overlay View";
+			sourceTree = "<group>";
+		};
+		376807001462F1130049249A /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				376806F11462F0D50049249A /* UIImage-Extensions.h */,
+				376806F21462F0D50049249A /* UIImage-Extensions.m */,
+			);
+			name = Extensions;
+			sourceTree = "<group>";
+		};
+		6E8D860F10A1047000DB7C32 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				376807001462F1130049249A /* Extensions */,
+				376806FD1462F0DE0049249A /* Decoder */,
+				376806FE1462F0EB0049249A /* Decoder Controller */,
+				376806EF1462F0D40049249A /* Sound.h */,
+				376806F01462F0D50049249A /* Sound.m */,
 				376805781462D1E20049249A /* FormatReader.h */,
 				376805791462D1E20049249A /* FormatReader.mm */,
+				3768057D1462D8280049249A /* QRCodeReader.h */,
+				3768057E1462D8280049249A /* QRCodeReader.mm */,
 				6E8D894510A1331600DB7C32 /* Decoder */,
 			);
+			name = Classes;
 			path = src;
 			sourceTree = "<group>";
 		};
 		6E8D894510A1331600DB7C32 /* Decoder */ = {
 			isa = PBXGroup;
 			children = (
-				6E8D894E10A1333F00DB7C32 /* DecoderDelegate.h */,
-				6E8D894610A1332200DB7C32 /* TwoDDecoderResult.h */,
-				6E8D894710A1332200DB7C32 /* TwoDDecoderResult.m */,
 			);
 			name = Decoder;
 			sourceTree = "<group>";
@@ -816,6 +887,11 @@
 				376806E31462EE7E0049249A /* Result.h in Headers */,
 				376806E51462EE7E0049249A /* ResultPoint.h in Headers */,
 				376806E71462EE7E0049249A /* ResultPointCallback.h in Headers */,
+				376806F31462F0D50049249A /* Decoder.h in Headers */,
+				376806F51462F0D50049249A /* DecoderController.h in Headers */,
+				376806F71462F0D50049249A /* OverlayView.h in Headers */,
+				376806F91462F0D50049249A /* Sound.h in Headers */,
+				376806FB1462F0D50049249A /* UIImage-Extensions.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -957,6 +1033,11 @@
 				376806E21462EE7E0049249A /* Result.cpp in Sources */,
 				376806E41462EE7E0049249A /* ResultPoint.cpp in Sources */,
 				376806E61462EE7E0049249A /* ResultPointCallback.cpp in Sources */,
+				376806F41462F0D50049249A /* Decoder.mm in Sources */,
+				376806F61462F0D50049249A /* DecoderController.m in Sources */,
+				376806F81462F0D50049249A /* OverlayView.m in Sources */,
+				376806FA1462F0D50049249A /* Sound.m in Sources */,
+				376806FC1462F0D50049249A /* UIImage-Extensions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
