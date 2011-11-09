@@ -5,3 +5,4 @@ intermediates/
 *.xcworkspace
 xcuserdata
 .svn
+*.*.sw[op]
